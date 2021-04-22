@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-import config
+from config import DISCORD_TOKEN
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 bot = commands.Bot(command_prefix = ">", intents = intents)
@@ -10,19 +10,6 @@ bot = commands.Bot(command_prefix = ">", intents = intents)
 async def on_ready():
     print('Successfully logged in and booted')
 
-@bot.command()
-async def load(ctx, extension):
-    bot.load_extension(f'cogs.{extension}')
-
-
-@bot.command()
-async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
-
-
-@bot.command()
-async def reload(ctx, extension):
-    bot.reload_extension(f'cogs.{extension}')
 
 #Automatically load all the cogs on startup
 for filename in os.listdir('./cogs'):
@@ -32,4 +19,4 @@ for filename in os.listdir('./cogs'):
         except Exception as e:
             print(f'Error loading cog {filename}:\n{e}')
 
-bot.run(config.DISCORD_TOKEN)
+bot.run(DISCORD_TOKEN)
