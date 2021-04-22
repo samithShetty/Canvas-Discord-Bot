@@ -36,7 +36,7 @@ class DevCog(commands.Cog):
         await ctx.send(f'Reloaded {extension}')    
 
 
-    @commands.command()
+    @commands.command(aliases = ["66"])
     @commands.check(is_dev)
     async def execute(self, ctx):
         await ctx.send("Entering execute mode, the bot will now be unable to respond to commands. Insert statements to be executed in terminal, type \"break\" in terminal to exit.")
