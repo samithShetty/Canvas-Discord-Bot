@@ -96,10 +96,20 @@ class CanvasCog(commands.Cog):
     async def before_reminder(self):
         await self.bot.wait_until_ready()
     
-    @commands.command()
+    @commands.command(aliases = ['reminders'])
     async def list_reminders(self, ctx):
-        channel_reminders = self.df[df["Channel_ID"] == ctx.channel.id]]
-        embed = discord.Embed()
+        embed = discord.Embed(
+            title = "Scheduled reminders for this channel"
+        )
+
+        channel_reminders = self.df[self.df["Channel_ID"] == ctx.channel.id]
+        for reminder in channel_reminders.itertuples():
+            embed.add_field(name= "Name", value = reminder.Name)
+            embed.add_field(name= "Time", value = reminder.Time)
+            embed.add_field(name= "Course", value = self.canvas.get_course(reminder.Course_ID))
+        
+        await ctx.send(embed=embed)
+        
 
     @commands.command(aliases = ['add'])
     async def add_reminder(self, ctx, reminder_time, course_code, *reminder_name_args):
@@ -108,7 +118,7 @@ class CanvasCog(commands.Cog):
         self.df = self.df.append(new_reminder, ignore_index = True)
         course = self.canvas.get_course(course_code)
         embed = discord.Embed(
-            title =  'Successfully scheduled automatic due date reminder'
+            title =  'Successfully scheduled automatic due date reminder',
             description = f'This channel will now recieve daily due date reminders at {reminder_time} EST. To remove the reminder, use the remove_reminder command'
         )
         embed.add_field(name = 'Reminder name', value = name)
@@ -119,12 +129,12 @@ class CanvasCog(commands.Cog):
     
     @commands.command(aliases = ['remove', 'delete'])
     async def remove_reminder(self, ctx, name):
-        channel_matches = self.df[df["Channel_ID"] == ctx.channel.id]]
+        channel_matches = self.df[df["Channel_ID"] == ctx.channel.id]
         name_match = channel_matches[channel_matches["Name"] == name]
         self.df = self.df.drop(to_be_deleted.index.tolist())
         
         embed = discord.Embed(
-            title =  'Successfully removed automatic due date reminder'
+            title =  'Successfully removed automatic due date reminder',
             description = f'Removed "{name}" reminder'
         )
         await ctx.send(embed=embed)
