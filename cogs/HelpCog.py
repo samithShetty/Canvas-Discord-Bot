@@ -16,8 +16,10 @@ class HelpCog(commands.Cog):
     @help.command()
     async def add_reminder(self, ctx):
         em = discord.Embed(title = "Add Reminder", description = "Adds a reminder", color = ctx.author.color)
-        em.add_field(name = "How to use:", value = ">add_reminder [stuff]")
+        em.add_field(name = "How to use:", value = ">add_reminder <reminder_time> <course_code> <reminder_name>")
+        em.add_field(name = "Variables:", value = "*reminder_time*: hh:mm 24 hour format\n*course_code*: got to course page and copy code from url (uncc.instructure.com/courses/######)\n*reminder_name*: type in a name for the reminder", inline= False)
         await ctx.send(embed = em)
+
 
 def setup(bot):
     bot.add_cog(HelpCog(bot))
