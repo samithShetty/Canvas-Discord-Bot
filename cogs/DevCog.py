@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-DEV_IDS = [255070353926127628]
+DEV_IDS = [255070353926127628, 187587747110846464, 685291675106410507]
 
 def is_dev(ctx):
     return ctx.message.author.id in DEV_IDS
