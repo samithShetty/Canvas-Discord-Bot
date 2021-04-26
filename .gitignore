@@ -1,6 +1,8 @@
 config.py
 *Test.py
 
+venv/
+
 __pycache__
 
 .vscode
