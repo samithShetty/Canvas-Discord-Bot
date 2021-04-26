@@ -10,6 +10,7 @@ bot = commands.Bot(command_prefix = ">", intents = intents)
 async def on_ready():
     print('Successfully logged in and booted')
 
+bot.remove_command("help")
 
 #Automatically load all the cogs on startup
 for filename in os.listdir('./cogs'):
