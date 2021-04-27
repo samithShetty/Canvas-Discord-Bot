@@ -4,6 +4,7 @@ config.py
 venv/
 
 __pycache__
+*.ini
 
 .vscode
 .idea
