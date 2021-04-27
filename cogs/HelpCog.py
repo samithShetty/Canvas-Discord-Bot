@@ -36,7 +36,7 @@ class HelpCog(commands.Cog):
 
     @help.command()
     async def list_reminders(self, ctx):
-        em = discord.Embed(title = "List Reminders", description = "Display current reminders", color = ctx.author.color)
+        em = discord.Embed(title = "List Reminders", description = "Displays current scheduled reminders in this channel", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">list_reminders")
         await ctx.send(embed = em)
 
