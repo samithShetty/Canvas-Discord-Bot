@@ -19,8 +19,8 @@ class CanvasCog(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.canvas = Canvas(API_URL, CANVAS_TOKEN)
-        self.df = pd.read_csv('pandasTest.csv')
-        self.reminder_timer.start()
+        self.reminder_df = pd.read_csv('Reminders.csv')
+        self.reminder_clock.start()
     
 
     @commands.command(aliases = ["course"])
@@ -85,18 +85,17 @@ class CanvasCog(commands.Cog):
         await channel.send(embed=embed)
 
     @tasks.loop(minutes = 1)
-    async def reminder_timer(self):
+    async def reminder_clock(self):
         current_datetime = datetime.datetime.now().astimezone(EST)
         time = current_datetime.strftime("%H:%M")
         print(f"Checking for reminders to send at {time}")
-
         
-        reminders_to_send = self.df[self.df["Time"] == time].itertuples()
+        reminders_to_send = self.reminder_df[self.reminder_df["Time"] == time].itertuples()
         for reminder in reminders_to_send:
             await self.send_reminder(reminder.Channel_ID, reminder.Course_ID, current_datetime)
     
 
-    @reminder_timer.before_loop 
+    @reminder_clock.before_loop 
     async def before_reminder(self):
         await self.bot.wait_until_ready() #Wait for bot to fully start up before starting the automatic due date reminders
     
@@ -107,7 +106,7 @@ class CanvasCog(commands.Cog):
             title = "Scheduled reminders for this channel",
             description = "This channel does not currently have any scheduled due date reminders"
         )
-        channel_reminders = self.df[self.df["Channel_ID"] == ctx.channel.id].itertuples()
+        channel_reminders = self.reminder_df[self.reminder_df["Channel_ID"] == ctx.channel.id].itertuples()
         for reminder in channel_reminders:
             embed.add_field(name= "Name", value = reminder.Name)
             embed.add_field(name= "Time", value = reminder.Time)
@@ -120,8 +119,8 @@ class CanvasCog(commands.Cog):
     @commands.command(aliases = ['add'])
     async def add_reminder(self, ctx, reminder_time, course_id, *reminder_name_args):
         name = " ".join(reminder_name_args)
-        new_reminder = pd.DataFrame([[reminder_time, ctx.channel.id, course_id, name]], columns = self.df.columns)
-        self.df = self.df.append(new_reminder, ignore_index = True)
+        new_reminder = pd.DataFrame([[reminder_time, ctx.channel.id, course_id, name]], columns = self.reminder_df.columns)
+        self.reminder_df = self.reminder_df.append(new_reminder, ignore_index = True)
         course = self.canvas.get_course(course_id)
         embed = discord.Embed(
             title =  'Successfully scheduled automatic due date reminder',
@@ -131,22 +130,22 @@ class CanvasCog(commands.Cog):
         embed.add_field(name = 'Time', value = reminder_time)
         embed.add_field(name = 'Course', value = course.name)
         await ctx.send(embed=embed)
-        self.df.to_csv('pandasTest.csv', index = False)
+        self.reminder_df.to_csv('Reminders.csv', index = False)
     
 
     @commands.command(aliases = ['remove', 'delete'])
     async def remove_reminder(self, ctx, *name_words):
         name = " ".join(name_words)
-        channel_reminders = self.df[self.df["Channel_ID"] == ctx.channel.id]
+        channel_reminders = self.reminder_df[self.reminder_df["Channel_ID"] == ctx.channel.id]
         to_be_deleted = channel_reminders[channel_reminders["Name"] == name]
-        self.df = self.df.drop(to_be_deleted.index.tolist())
+        self.reminder_df = self.reminder_df.drop(to_be_deleted.index.tolist())
         
         embed = discord.Embed(
             title =  'Successfully removed automatic due date reminder',
             description = f'Removed "{name}" reminder'
         )
         await ctx.send(embed=embed)
-        self.df.to_csv('pandasTest.csv', index = False)
+        self.reminder_df.to_csv('Reminders.csv', index = False)
 
 
     
