@@ -18,6 +18,7 @@ class HelpCog(commands.Cog):
         em = discord.Embed(title = "Add Reminder", description = "Adds a reminder", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">add_reminder <reminder_time> <course_code> <reminder_name>")
         em.add_field(name = "Variables:", value = "*reminder_time*: hh:mm 24 hour format\n*course_code*: got to course page and copy code from url (uncc.instructure.com/courses/######)\n*reminder_name*: type in a name for the reminder", inline= False)
+        em.add_field(name = "Aliases:", value = ">add")
         await ctx.send(embed = em)
 
     @help.command()
@@ -25,6 +26,7 @@ class HelpCog(commands.Cog):
         em = discord.Embed(title = "Get Assignments", description = "Lists assignments", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">get_assignments <course_code> <num_assignments>")
         em.add_field(name = "Variables:", value = "*course_code*: got to course page and copy code from url (uncc.instructure.com/courses/######)\n*num_assignments*: type in the number assignments you want to see, default of 5", inline= False)
+        em.add_field(name = "Aliases:", value = ">due, >upcoming, >assignments")
         await ctx.send(embed = em)
 
     @help.command()
@@ -32,12 +34,14 @@ class HelpCog(commands.Cog):
         em = discord.Embed(title = "Get Course", description = "Displays corresponding course to inputted course code", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">get_course <course_code>")
         em.add_field(name = "Variables:", value = "*course_code*: got to course page and copy code from url (uncc.instructure.com/courses/######)", inline= False)
+        em.add_field(name = "Aliases:", value = ">course")
         await ctx.send(embed = em)
 
     @help.command()
     async def list_reminders(self, ctx):
         em = discord.Embed(title = "List Reminders", description = "Displays current scheduled reminders in this channel", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">list_reminders")
+        em.add_field(name = "Aliases:", value = ">reminders", inline= False)
         await ctx.send(embed = em)
 
     @help.command()
@@ -45,6 +49,7 @@ class HelpCog(commands.Cog):
         em = discord.Embed(title = "Remove Reminder", description = "Removes a reminder", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">add_reminder <reminder_name>")
         em.add_field(name = "Variables:", value = "*reminder_name*: type in the name of the reminder you want to remove", inline= False)
+        em.add_field(name = "Aliases:", value = ">remove, >delete")
         await ctx.send(embed = em)
 
 def setup(bot):

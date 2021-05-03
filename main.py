@@ -3,16 +3,18 @@ from discord.ext import commands
 import os
 from config import DISCORD_TOKEN
 
-intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
-bot = commands.Bot(command_prefix = ">", intents = intents)
+intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
+bot = commands.Bot(command_prefix=">", intents=intents)
+
 
 @bot.event
 async def on_ready():
     print('Successfully logged in and booted')
 
+
 bot.remove_command("help")
 
-#Automatically load all the cogs on startup
+# Automatically load all the cogs on startup
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         try:
