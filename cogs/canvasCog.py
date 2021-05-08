@@ -14,7 +14,7 @@ API_URL = 'https://uncc.instructure.com'
 
 EST = pytz.timezone('US/Eastern')
 CANVAS_DATE_FORMAT = r'%Y-%m-%dT%H:%M:%SZ'
-OUTPUT_DATE_FORMAT = r'%A, %b %d at %I:%M %p'
+OUTPUT_DATE_FORMAT = r'%a, %b %d at %I:%M %p'
 
 class CanvasCog(commands.Cog):
     def __init__(self,bot):
@@ -78,7 +78,7 @@ class CanvasCog(commands.Cog):
     async def send_announcements(self, announcement):
         course_id = int(announcement.context_code[announcement.context_code.index("_")+1:])
         course = self.canvas.get_course(course_id)
-        post_datetime = pytz.utc.localize(datetime.datetime.strptime(announcement.posted_at, CANVAS_DATE_FORMAT)).astimezone(EST).strftime(NEW_DATE_FORMAT)
+        post_datetime = pytz.utc.localize(datetime.datetime.strptime(announcement.posted_at, CANVAS_DATE_FORMAT)).astimezone(EST).strftime(OUTPUT_DATE_FORMAT)
 
         embed = discord.Embed(
             title = announcement.title,
@@ -89,6 +89,7 @@ class CanvasCog(commands.Cog):
 
 
         for index, channel_id in self.announcement_df[self.announcement_df["Course_ID"]==course_id]["Channel_ID"].iteritems():
+            print(f'Sending to {channel_id}')
             channel = self.bot.get_channel(channel_id)
             await channel.send(embed=embed)
 
@@ -100,6 +101,7 @@ class CanvasCog(commands.Cog):
         print(f"Listening for announcements at {time}")
         announcements = self.canvas.get_announcements(self.announcement_df.Course_ID.unique().tolist(), start_date= self.last_check_time , end_date = current_datetime)
         for announcement in announcements:
+            print(f'Sending {announcement}')
             await self.send_announcements(announcement)
     
         self.last_check_time = current_datetime
@@ -120,8 +122,6 @@ class CanvasCog(commands.Cog):
         for index, course_id in channel_announcements.Course_ID.items():
             embed.add_field(name=self.canvas.get_course(course_id), value=" \u200b", inline=False)
             embed.description= "Here are the course announcement subscriptions for this channel"
-        
-        
         await ctx.send(embed=embed)
 
     
