@@ -96,7 +96,7 @@ class CanvasCog(commands.Cog):
 
     @tasks.loop(minutes = 1)
     async def announcement_listener(self):
-        current_datetime = datetime.datetime.now()
+        current_datetime = datetime.datetime.now().astimezone(EST)
         time = current_datetime.strftime("%H:%M")
         print(f"Listening for announcements at {time}")
         announcements = self.canvas.get_announcements(context_codes = self.announcement_df.Course_ID.unique().tolist(), start_date= self.last_check_time , end_date = current_datetime)
