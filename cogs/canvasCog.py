@@ -99,7 +99,7 @@ class CanvasCog(commands.Cog):
         current_datetime = datetime.datetime.now()
         time = current_datetime.strftime("%H:%M")
         print(f"Listening for announcements at {time}")
-        announcements = self.canvas.get_announcements(self.announcement_df.Course_ID.unique().tolist(), start_date= self.last_check_time , end_date = current_datetime)
+        announcements = self.canvas.get_announcements(context_codes = self.announcement_df.Course_ID.unique().tolist(), start_date= self.last_check_time , end_date = current_datetime)
         for announcement in announcements:
             print(f'Sending {announcement}')
             await self.send_announcements(announcement)
