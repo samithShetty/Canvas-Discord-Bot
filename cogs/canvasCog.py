@@ -127,8 +127,8 @@ class CanvasCog(commands.Cog):
     
     @commands.command()
     async def add_announcement(self, ctx, course_id):
-        self.announcement_df = self.announcement_df.append(pd.DataFrame([[ctx.channel.id, course_id]], columns= self.announcement_df.columns), ignore_index=True)
         course = self.canvas.get_course(course_id)
+        self.announcement_df = self.announcement_df.append(pd.DataFrame([[ctx.channel.id, course_id]], columns= self.announcement_df.columns), ignore_index=True)
         embed = discord.Embed(
             title =  'Successfully subscribed to course announcements',
             description = f'This channel will now automatically recieve announcements from Canvas for the specified course. To unsubscribe, use the remove_announcement command'
@@ -209,10 +209,10 @@ class CanvasCog(commands.Cog):
 
     @commands.command(aliases = ['add'])
     async def add_reminder(self, ctx, reminder_time, course_id, *reminder_name_args):
+        course = self.canvas.get_course(course_id)
         name = " ".join(reminder_name_args)
         new_reminder = pd.DataFrame([[reminder_time, ctx.channel.id, course_id, name]], columns = self.reminder_df.columns)
         self.reminder_df = self.reminder_df.append(new_reminder, ignore_index = True)
-        course = self.canvas.get_course(course_id)
         embed = discord.Embed(
             title =  'Successfully scheduled automatic due date reminder',
             description = f'This channel will now recieve daily due date reminders at {reminder_time} EST. To remove the reminder, use the remove_reminder command'
