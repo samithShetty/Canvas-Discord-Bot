@@ -68,7 +68,7 @@ class HelpCog(commands.Cog):
         await ctx.send(embed = em)
     
     @help.command()
-    async def remove_announcements(self, ctx):
+    async def remove_announcement(self, ctx):
         em = discord.Embed(title = "Remove Announcements", description = "Removes an announcement", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">remove_announcement <course_code>")
         em.add_field(name = "Variables:", value = "*course_code*: use >get_courses to get the course code of the announcement you want to remove", inline= False)
