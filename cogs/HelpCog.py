@@ -9,7 +9,9 @@ class HelpCog(commands.Cog):
     async def help(self, ctx):
         em = discord.Embed(title = "Help", description = "Use >help <command> for information on that command.", color = ctx.author.color)
 
-        em.add_field(name = "Canvas commands", value = "add_reminder, get_assignments, get_course, list_reminders, remove_reminder")
+        em.add_field(name = "General commands", value = "get_assignments, get_courses")
+        em.add_field(name = "Announcement commands", value = "add_announcement, remove_announcement, list_announcements")
+        em.add_field(name = "Reminder commands", value = "add_reminder, remove_reminder, list_reminders")
 
         await ctx.send(embed = em)
 
