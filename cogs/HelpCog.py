@@ -42,7 +42,6 @@ class HelpCog(commands.Cog):
     async def get_courses(self, ctx):
         em = discord.Embed(title = "Get Course", description = "Displays all courses along with corresponding codes that the bot has access to", color = ctx.author.color)
         em.add_field(name = "How to use:", value = ">get_course <course_code>")
-        em.add_field(name = "Variables:", value = "*course_code*: use >get_courses", inline= False)
         em.add_field(name = "Aliases:", value = ">courses")
         await ctx.send(embed = em)
 
