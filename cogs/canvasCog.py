@@ -171,7 +171,7 @@ class CanvasCog(commands.Cog):
             embed.add_field(name=assignment[0].name, value = assignment[1].strftime(OUTPUT_DATE_FORMAT), inline=False)
         
         if len(due_today) == 0:
-            embed.description = "There are no assignments due today for this course"
+            return # If there aren't any assignments due today, don't send a reminder
         
         await channel.send(embed=embed)
 
