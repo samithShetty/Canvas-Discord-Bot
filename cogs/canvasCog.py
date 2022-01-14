@@ -23,14 +23,11 @@ class CanvasCog(commands.Cog):
         self.reminder_df = pd.read_csv('csv/Reminders.csv')
         self.announcement_df = pd.read_csv('csv/Announcements.csv', dtype='int64')
         self.last_check_time = datetime.datetime.now()
-        self.reminder_clock.start()
-        self.announcement_listener.start()
+        self.clock.start()
     
     def cog_unload(self):
         print("Unloading Canvas Cog")
-        self.reminder_clock.cancel()
-        self.announcement_listener.cancel()
-    
+        self.clock.cancel()
 
     @commands.command(aliases = ["courses"])
     async def get_courses(self, ctx):
@@ -93,24 +90,6 @@ class CanvasCog(commands.Cog):
             channel = self.bot.get_channel(channel_id)
             await channel.send(embed=embed)
 
-
-    @tasks.loop(minutes = 1)
-    async def announcement_listener(self):
-        current_datetime = datetime.datetime.now().astimezone(EST)
-        time = current_datetime.strftime("%H:%M")
-        print(f"Listening for announcements at {time}")
-        announcements = self.canvas.get_announcements(context_codes = self.announcement_df.Course_ID.unique().tolist(), start_date= self.last_check_time , end_date = current_datetime)
-        for announcement in announcements:
-            print(f'Sending {announcement}')
-            await self.send_announcements(announcement)
-    
-        self.last_check_time = current_datetime
-    
-    
-    @announcement_listener.before_loop
-    async def before_announcement_loop(self):
-        await self.bot.wait_until_ready() #Wait for bot to fully start up before starting the automatic announcement checks
-    
 
     @commands.command(aliases = ['announcements'])
     async def list_announcements(self, ctx):
@@ -176,7 +155,7 @@ class CanvasCog(commands.Cog):
         await channel.send(embed=embed)
 
     @tasks.loop(minutes = 1)
-    async def reminder_clock(self):
+    async def clock(self):
         current_datetime = datetime.datetime.now().astimezone(EST)
         time = current_datetime.strftime("%H:%M")
         print(f"Checking for reminders to send at {time}")
@@ -184,10 +163,20 @@ class CanvasCog(commands.Cog):
         reminders_to_send = self.reminder_df[self.reminder_df["Time"] == time].itertuples()
         for reminder in reminders_to_send:
             await self.send_reminder(reminder.Channel_ID, reminder.Course_ID, current_datetime)
+        
+        print(f"Listening for announcements at {time}")
+        courses = self.announcement_df.Course_ID.unique().tolist()
+        if courses:
+            announcements = self.canvas.get_announcements(context_codes = courses, start_date= self.last_check_time , end_date = current_datetime)
+            for announcement in announcements:
+                print(f'Sending {announcement}')
+                await self.send_announcements(announcement)
+    
+        self.last_check_time = current_datetime
     
 
-    @reminder_clock.before_loop 
-    async def before_reminder_loop(self):
+    @clock.before_loop 
+    async def before_clock(self):
         await self.bot.wait_until_ready() #Wait for bot to fully start up before starting the automatic due date reminders
     
 
