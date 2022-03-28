@@ -229,6 +229,6 @@ class CanvasCog(commands.Cog):
 
 
     
-def setup(bot):
-    bot.add_cog(CanvasCog(bot))
+async def setup(bot):
+    await bot.add_cog(CanvasCog(bot))
     print("Canvas Cog successfully loaded")

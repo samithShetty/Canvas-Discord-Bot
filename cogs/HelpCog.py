@@ -74,6 +74,6 @@ class HelpCog(commands.Cog):
         em.add_field(name = "Variables:", value = "*course_code*: use >get_courses to get the course code of the announcement you want to remove", inline= False)
         await ctx.send(embed = em)
 
-def setup(bot):
-    bot.add_cog(HelpCog(bot))
+async def setup(bot):
+    await bot.add_cog(HelpCog(bot))
     print("Help Cog successfully loaded")
