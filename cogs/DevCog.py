@@ -18,21 +18,21 @@ class DevCog(commands.Cog):
     @commands.command()
     @commands.check(is_dev)
     async def load(self, ctx, extension):
-        self.bot.load_extension(f'cogs.{extension}')
+        await self.bot.load_extension(f'cogs.{extension}')
         await ctx.send(f'Loaded {extension}')
 
 
     @commands.command()
     @commands.check(is_dev)
     async def unload(self, ctx, extension):
-        self.bot.unload_extension(f'cogs.{extension}')
+        await self.bot.unload_extension(f'cogs.{extension}')
         await ctx.send(f'Unloaded {extension}')
 
 
     @commands.command()
     @commands.check(is_dev)
     async def reload(self, ctx, extension):
-        self.bot.reload_extension(f'cogs.{extension}')
+        await self.bot.reload_extension(f'cogs.{extension}')
         await ctx.send(f'Reloaded {extension}')    
 
 
@@ -54,6 +54,6 @@ class DevCog(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(DevCog(bot))
+async def setup(bot):
+    await bot.add_cog(DevCog(bot))
     print("Developer Cog successfully loaded")
